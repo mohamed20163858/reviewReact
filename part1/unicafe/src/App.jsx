@@ -19,12 +19,18 @@ const GivenFeedback = ({
   );
 };
 const Statistics = ({ good, neutral, bad }) => {
+  const total = good + neutral + bad;
+  const avg = total === 0 ? 0 : (good * 1 + neutral * 0 + bad * -1) / total;
+  const positive = total === 0 ? 0 : (good / total) * 100;
   return (
     <div>
       <h2>Statistics</h2>
       <p>Good: {good}</p>
       <p>Neutral: {neutral}</p>
       <p>Bad: {bad}</p>
+      <p>All: {total}</p>
+      <p>Average: {avg}</p>
+      <p>Positive: {positive}%</p>
     </div>
   );
 };
