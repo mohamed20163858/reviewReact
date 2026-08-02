@@ -1,3 +1,7 @@
+- Solutions to exercises of part 0:
+
+-- solution to exercise 0.4 :
+
 ```mermaid
 sequenceDiagram
 participant browser
