@@ -1,6 +1,6 @@
-- Solutions to exercises of part 0:
+# Solutions to exercises of part 0:
 
--- solution to exercise 0.4 :
+## solution to exercise 0.4 :
 
 ```mermaid
 sequenceDiagram
