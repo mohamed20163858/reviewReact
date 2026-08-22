@@ -12,7 +12,7 @@ participant server
     server-->>browser: respond with redirection to https://studies.cs.helsinki.fi/exampleapp/notes
     deactivate server
 
-    Note right of browser: the server modify the req body by pushing new note object to the notes array <br/> then respond with 302 status redirect code to make browser redirect to https://studies.cs.helsinki.fi/exampleapp/notes
+    Note right of browser: the server modify the req body by pushing new note object to the notes array <br/> then respond with 302 status redirect code to make browser redirect to <br/> https://studies.cs.helsinki.fi/exampleapp/notes
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate server
@@ -87,6 +87,6 @@ participant server
     server-->>browser: respond with 201 created status code
     deactivate server
 
-    Note right of browser: The browser executes the js file it fetched from the start when the user <br/> opened the site, the js file just send post request its body contains the new note object created <br/> then the browser push this object inside its local notes array rerender the page to reflect <br/> the changes then lastly send a post request to the server , and the server respond with 201 <br/> status code which mean it successfully appled to create the new change.
+    Note right of browser: The browser executes the js file it fetched from the start when the user  opened the site <br/> the js file just send post request its body contains the new note object created <br/> then the browser push this object inside its local notes array rerender the page to reflect <br/> the changes then lastly send a post request to the server , and the server respond with 201 <br/> status code which mean it successfully appled to create the new change.
 
 ```
