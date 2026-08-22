@@ -74,3 +74,19 @@ participant server
     Note right of browser: The browser executes the callback function that renders the notes
 
 ```
+
+## solution to exercise 0.6 :
+
+```mermaid
+sequenceDiagram
+participant browser
+participant server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    activate server
+    server-->>browser: respond with 201 created status code
+    deactivate server
+
+    Note right of browser: The browser executes the js file it fetched from the start when the user opened the site, the js file just send post request its body contains the new note object created then the browser push this object inside its local notes array rerender the page to reflect the changes then lastly send a post request to the server , and the server respond with 201 status code which mean it successfully appled to create the new change.
+
+```
