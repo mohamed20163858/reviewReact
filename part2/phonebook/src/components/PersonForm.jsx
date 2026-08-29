@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import personService from "../services/persons";
 const PersonForm = ({ setPersons, persons }) => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
@@ -10,10 +10,7 @@ const PersonForm = ({ setPersons, persons }) => {
       alert(`${newName} is already added to phonebook`);
     } else {
       setPersons(persons.concat({ name: newName, number: newNumber }));
-      axios.post("http://localhost:3001/persons", {
-        name: newName,
-        number: newNumber,
-      });
+      personService.create({ name: newName, number: newNumber });
     }
     document.getElementById("name").value = "";
     setNewName("");
