@@ -1,6 +1,12 @@
 import personService from "../services/persons";
 
-const Persons = ({ persons, setPersons, filterValue }) => {
+const Persons = ({
+  persons,
+  setPersons,
+  filterValue,
+  setMessage,
+  setErrorBoolean,
+}) => {
   const filtered = persons.filter((person) =>
     person.name.toLowerCase().includes(filterValue.toLowerCase()),
   );
@@ -11,11 +17,20 @@ const Persons = ({ persons, setPersons, filterValue }) => {
         .destroy(person.id)
         .then(() => {
           setPersons(persons.filter((p) => p.id !== person.id));
+          setMessage(`Deleted ${person.name}'s number from phonebook`);
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
         })
         .catch(() => {
-          alert(
+          setErrorBoolean(true);
+          setMessage(
             `Information of ${person.name} has already been removed from server`,
           );
+          setTimeout(() => {
+            setMessage(null);
+            setErrorBoolean(false);
+          }, 5000);
         });
     }
   };

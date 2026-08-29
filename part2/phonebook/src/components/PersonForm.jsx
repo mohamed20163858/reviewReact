@@ -1,6 +1,6 @@
 import { useState } from "react";
 import personService from "../services/persons";
-const PersonForm = ({ setPersons, persons }) => {
+const PersonForm = ({ setPersons, persons, setMessage, setErrorBoolean }) => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const handleSubmit = (e) => {
@@ -35,11 +35,21 @@ const PersonForm = ({ setPersons, persons }) => {
                     : person,
                 ),
               );
+              setMessage(`Updated ${found.name}'s number to ${newNumber}`);
+              setTimeout(() => {
+                setMessage(null);
+              }, 5000);
             })
             .catch(() => {
-              alert(
+              setErrorBoolean(true);
+              setMessage(
                 `Information of ${found.name} has already been removed from server`,
               );
+              setTimeout(() => {
+                setMessage(null);
+                setErrorBoolean(false);
+              }, 5000);
+
               setPersons(persons.filter((p) => p.id !== found.id));
             });
         }
@@ -55,9 +65,20 @@ const PersonForm = ({ setPersons, persons }) => {
           name: consistentName,
           number: newNumber,
         })
-        .then((data) => setPersons(persons.concat(data)))
+        .then((data) => {
+          setPersons(persons.concat(data));
+          setMessage(`Added ${consistentName}`);
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        })
         .catch((error) => {
-          alert(error.response.data);
+          setErrorBoolean(true);
+          setMessage(error.response.data.error);
+          setTimeout(() => {
+            setMessage(null);
+            setErrorBoolean(false);
+          }, 5000);
         });
     }
     document.getElementById("name").value = "";
