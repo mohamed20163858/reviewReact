@@ -5,6 +5,16 @@ const PersonForm = ({ setPersons, persons }) => {
   const [newNumber, setNewNumber] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (newName.trim() === "" || newNumber.trim() === "") {
+      alert("Name and number cannot be empty");
+      return;
+    }
+    for (let i = 0; i < newNumber.length; i++) {
+      if (isNaN(newNumber[i]) && newNumber[i] !== "-") {
+        alert("Number can only contain digits and hyphens");
+        return;
+      }
+    }
     let found = persons.find((person) => person.name === newName);
     if (found !== undefined) {
       if (found.number === newNumber) {
@@ -35,9 +45,14 @@ const PersonForm = ({ setPersons, persons }) => {
         }
       }
     } else {
+      const consistentName = newName
+        .trim()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
       personService
         .create({
-          name: newName,
+          name: consistentName,
           number: newNumber,
         })
         .then((data) => setPersons(persons.concat(data)))
