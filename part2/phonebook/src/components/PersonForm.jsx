@@ -15,14 +15,19 @@ const PersonForm = ({ setPersons, persons, setMessage, setErrorBoolean }) => {
         return;
       }
     }
-    let found = persons.find((person) => person.name === newName);
+    const consistentName = newName
+      .trim()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+    let found = persons.find((person) => person.name === consistentName);
     if (found !== undefined) {
       if (found.number === newNumber) {
-        alert(`${newName} is already added to phonebook`);
+        alert(`${consistentName} is already added to phonebook`);
       } else {
         if (
           window.confirm(
-            `${newName} is already added to phonebook, replace the old number with a new one?`,
+            `${consistentName} is already added to phonebook, replace the old number with a new one?`,
           )
         ) {
           personService
@@ -55,11 +60,6 @@ const PersonForm = ({ setPersons, persons, setMessage, setErrorBoolean }) => {
         }
       }
     } else {
-      const consistentName = newName
-        .trim()
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
       personService
         .create({
           name: consistentName,
