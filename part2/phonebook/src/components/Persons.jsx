@@ -7,8 +7,16 @@ const Persons = ({ persons, setPersons, filterValue }) => {
   const filteredNames = filtered.length === 0 ? persons : filtered;
   const handleDelete = (person) => {
     if (window.confirm(`Delete ${person.name}?`)) {
-      personService.destroy(person.id);
-      setPersons(persons.filter((p) => p.id !== person.id));
+      personService
+        .destroy(person.id)
+        .then(() => {
+          setPersons(persons.filter((p) => p.id !== person.id));
+        })
+        .catch(() => {
+          alert(
+            `Information of ${person.name} has already been removed from server`,
+          );
+        });
     }
   };
 

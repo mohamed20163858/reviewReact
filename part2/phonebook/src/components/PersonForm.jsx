@@ -7,10 +7,43 @@ const PersonForm = ({ setPersons, persons }) => {
     e.preventDefault();
     let found = persons.find((person) => person.name === newName);
     if (found !== undefined) {
-      alert(`${newName} is already added to phonebook`);
+      if (found.number === newNumber) {
+        alert(`${newName} is already added to phonebook`);
+      } else {
+        if (
+          window.confirm(
+            `${newName} is already added to phonebook, replace the old number with a new one?`,
+          )
+        ) {
+          personService
+            .update(found.id, { ...found, number: newNumber })
+            .then(() => {
+              setPersons(
+                persons.map((person) =>
+                  person.id === found.id
+                    ? { ...person, number: newNumber }
+                    : person,
+                ),
+              );
+            })
+            .catch(() => {
+              alert(
+                `Information of ${found.name} has already been removed from server`,
+              );
+              setPersons(persons.filter((p) => p.id !== found.id));
+            });
+        }
+      }
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }));
-      personService.create({ name: newName, number: newNumber });
+      personService
+        .create({
+          name: newName,
+          number: newNumber,
+        })
+        .then((data) => setPersons(persons.concat(data)))
+        .catch((error) => {
+          alert(error.response.data);
+        });
     }
     document.getElementById("name").value = "";
     setNewName("");
