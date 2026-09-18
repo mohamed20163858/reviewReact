@@ -1,12 +1,20 @@
-const SearchNotification = ({ searchTerm, countries, setSelectedCountry }) => {
+import { useEffect } from "react";
+const SearchNotification = ({
+  searchTerm,
+  setSearchTerm,
+  countries,
+  setSelectedCountry,
+}) => {
   const filteredCountries = countries.filter((country) =>
     country.startsWith(searchTerm.toLowerCase()),
   );
-  if (filteredCountries.length === 1) {
-    setSelectedCountry(filteredCountries[0]);
-  } else {
-    setSelectedCountry(null);
-  }
+  useEffect(() => {
+    if (filteredCountries.length === 1) {
+      setSelectedCountry(filteredCountries[0]);
+    } else {
+      setSelectedCountry(null);
+    }
+  }, [filteredCountries, setSelectedCountry]);
 
   if (searchTerm === "") {
     return null;
@@ -17,7 +25,17 @@ const SearchNotification = ({ searchTerm, countries, setSelectedCountry }) => {
       <div>
         <ul>
           {filteredCountries.map((country) => (
-            <li key={country}>{country}</li>
+            <li key={country}>
+              {country}{" "}
+              <button
+                onClick={() => {
+                  setSearchTerm(country);
+                  setSelectedCountry(country);
+                }}
+              >
+                Show
+              </button>
+            </li>
           ))}
         </ul>
       </div>

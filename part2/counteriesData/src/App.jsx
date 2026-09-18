@@ -16,8 +16,10 @@ const App = () => {
       <CountrySearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <SearchNotification
         searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
         countries={countries}
         setSelectedCountry={setSelectedCountry}
+        selectedCountry={selectedCountry}
       />
       <CountryInfo selectedCountry={selectedCountry} />
     </div>

@@ -7,16 +7,14 @@ const CountryInfo = ({ selectedCountry }) => {
       // Fetch country data
       countryFetchData.getCountryByName(selectedCountry).then((response) => {
         setCountryData(response.data);
+        console.log(selectedCountry);
       });
     }
   }, [selectedCountry]);
 
-  if (selectedCountry === null) {
-    return null;
-  }
   return (
     <div>
-      {countryData && (
+      {countryData && selectedCountry && (
         <div>
           <h2>{countryData.name.common}</h2>
           <p>Capital: {countryData.capital}</p>
