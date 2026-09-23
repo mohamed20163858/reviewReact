@@ -33,6 +33,15 @@ app.get("/info", (req, res) => {
     `<p>Phonebook has info for ${phonebookList.length} people</p><p>${date}</p>`,
   );
 });
+app.get("/api/persons/:id", (req, res) => {
+  const id = req.params.id;
+  const person = phonebookList.find((person) => person.id === id);
+  if (person) {
+    res.json(person);
+  } else {
+    res.status(404).send("Person not found");
+  }
+});
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
