@@ -52,6 +52,20 @@ app.delete("/api/persons/:id", (req, res) => {
     res.status(404).json({ message: "Person not found" });
   }
 });
+app.post("/api/persons", (req, res) => {
+  const { name, number } = req.body;
+  if (!name || !number) {
+    return res.status(400).json({ error: "Name and number are required" });
+  }
+  const existingPerson = phonebookList.find((person) => person.name === name);
+  if (existingPerson) {
+    return res.status(400).json({ error: "Name must be unique" });
+  }
+  const id = Math.floor(Math.random() * 1000000).toString();
+  const newPerson = { id, name, number };
+  phonebookList.push(newPerson);
+  res.status(201).json(newPerson);
+});
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
