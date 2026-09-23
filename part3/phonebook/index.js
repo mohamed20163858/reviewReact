@@ -39,7 +39,17 @@ app.get("/api/persons/:id", (req, res) => {
   if (person) {
     res.json(person);
   } else {
-    res.status(404).send("Person not found");
+    res.status(404).json({ message: "Person not found" });
+  }
+});
+app.delete("/api/persons/:id", (req, res) => {
+  const id = req.params.id;
+  const personIndex = phonebookList.findIndex((person) => person.id === id);
+  if (personIndex !== -1) {
+    phonebookList.splice(personIndex, 1);
+    res.status(200).json({ message: "Person deleted" });
+  } else {
+    res.status(404).json({ message: "Person not found" });
   }
 });
 app.listen(port, () => {
