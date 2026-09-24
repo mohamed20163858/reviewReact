@@ -45,7 +45,8 @@ app.use(
     ].join(" ");
   }),
 );
-const port = 3001;
+app.use(express.static("dist"));
+const port = process.env.PORT || 3001;
 app.get("/api/persons", (req, res) => {
   res.json(phonebookList);
 });
