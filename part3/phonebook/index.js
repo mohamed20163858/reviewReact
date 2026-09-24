@@ -23,7 +23,11 @@ const phonebookList = [
 const express = require("express");
 const morgan = require("morgan");
 morgan.token("reqPayload", function (req, res) {
-  return `{name: ${req.body.name}, number: ${req.body.number}}`;
+  if (req.method === "POST" && req.body) {
+    return `{name: ${req.body.name}, number: ${req.body.number}}`;
+  } else {
+    return "";
+  }
 });
 const app = express();
 app.use(express.json());
