@@ -1,27 +1,6 @@
-const phonebookList = [
-  {
-    id: "1",
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: "2",
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: "3",
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: "4",
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
 const express = require("express");
 const morgan = require("morgan");
+const Person = require("./models/person");
 morgan.token("reqPayload", function (req, res) {
   if (req.method === "POST" && req.body) {
     return `{name: ${req.body.name}, number: ${req.body.number}}`;
@@ -48,46 +27,82 @@ app.use(
 app.use(express.static("dist"));
 const port = process.env.PORT || 3001;
 app.get("/api/persons", (req, res) => {
-  res.json(phonebookList);
+  Person.find({})
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      console.error("Error fetching persons:", error.message);
+      res.status(500).json({ error: "Internal server error" });
+    });
 });
 app.get("/info", (req, res) => {
   const date = new Date();
-  res.send(
-    `<p>Phonebook has info for ${phonebookList.length} people</p><p>${date}</p>`,
-  );
+  Person.find({})
+    .then((phonebookList) => {
+      res.send(
+        `<p>Phonebook has info for ${phonebookList.length} people</p><p>${date}</p>`,
+      );
+    })
+    .catch((error) => {
+      console.error("Error fetching persons:", error.message);
+      res.status(500).json({ error: "Internal server error" });
+    });
 });
 app.get("/api/persons/:id", (req, res) => {
   const id = req.params.id;
-  const person = phonebookList.find((person) => person.id === id);
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).json({ message: "Person not found" });
-  }
+  Person.findById(id)
+    .then((person) => {
+      if (person) {
+        res.json(person);
+      } else {
+        res.status(404).json({ message: "Person not found" });
+      }
+    })
+    .catch((error) => {
+      if (error.name === "CastError") {
+        return res.status(400).json({ message: "Person not found" });
+      }
+      console.error("Error fetching person:", error.message);
+      res.status(500).json({ error: "Internal server error" });
+    });
 });
 app.delete("/api/persons/:id", (req, res) => {
   const id = req.params.id;
-  const personIndex = phonebookList.findIndex((person) => person.id === id);
-  if (personIndex !== -1) {
-    phonebookList.splice(personIndex, 1);
-    res.status(200).json({ message: "Person deleted" });
-  } else {
-    res.status(404).json({ message: "Person not found" });
-  }
+  Person.findByIdAndDelete(id)
+    .then((person) => {
+      if (person) {
+        res.status(200).json({ message: "Person deleted" });
+      } else {
+        res.status(404).json({ message: "Person not found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Error deleting person:", error.message);
+      res.status(500).json({ error: "Internal server error" });
+    });
 });
 app.post("/api/persons", (req, res) => {
   const { name, number } = req.body;
   if (!name || !number) {
     return res.status(400).json({ error: "Name and number are required" });
   }
-  const existingPerson = phonebookList.find((person) => person.name === name);
-  if (existingPerson) {
-    return res.status(400).json({ error: "Name must be unique" });
-  }
-  const id = Math.floor(Math.random() * 1000000).toString();
-  const newPerson = { id, name, number };
-  phonebookList.push(newPerson);
-  res.status(201).json(newPerson);
+  Person.findOne({ name }).then((person) => {
+    if (person) {
+      return res.status(400).json({ error: "Name must be unique" });
+    } else {
+      const newPerson = new Person({ name, number });
+      newPerson
+        .save()
+        .then((savedPerson) => {
+          res.status(201).json(savedPerson);
+        })
+        .catch((error) => {
+          console.error("Error saving person:", error.message);
+          res.status(500).json({ error: "Internal server error" });
+        });
+    }
+  });
 });
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
